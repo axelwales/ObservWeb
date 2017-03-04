@@ -1,0 +1,26 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>ThreatMap - CS404 Project</title>
+  <meta name="description" content="ThreatMap Project">
+  <meta name="author" content="Axel et al">
+
+  <link rel="stylesheet" href="{% static "map/leaflet/leaflet.css" %}" />
+	<link rel="stylesheet" href="{% static "map/map.css" %}" />
+</head>
+
+<body>
+	<div id="body-content">
+  	<div id="threatmap"></div>
+  </div>
+  <script src="{% static "map/jquery/jquery-3.1.1.js" %}"></script>
+  <script src="{% static "map/leaflet/leaflet.js" %}"></script>
+  <script src="{% static "map/heatmap/heatmap.js" %}"></script>
+	<script src="{% static "map/heatmap/leaflet-heatmap.js" %}"></script>
+	<script src="{% static "map/map.js" %}"></script>
+</body>
+</html>
