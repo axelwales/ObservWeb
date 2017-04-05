@@ -19,6 +19,15 @@ class NestedFingerprintSerializer(serializers.ModelSerializer):
 class LocationFingerprintSerializer(serializers.ModelSerializer):
 	fingerprints = NestedFingerprintSerializer(many=True, read_only=True)
 
+    def create(self, validated_data):
+        fingerprints_data = validated_data.pop('fingerprints')
+        location = Location.objects.create(**validated_data)
+        for fingerprint_data in fingerprints_data:
+            access_point_data = fingerprint_data.pop('access_point')
+            AccessPoint.objects.create(**access_point_data)
+            Fingerprint.objects.create(location=location, **fingerprint_data)
+        return location
+
     class Meta:
         model = Location
         fields = ('id', 'lat', 'lng', 'fingerprints')
