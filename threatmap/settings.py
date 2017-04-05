@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'kcv9#f1l!sbgy=00joz8t6b2rf+=5oo@+hev%1q#g2m3u8ej*4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['axelwales.pythonanywhere.com']
 
 
 # Application definition
