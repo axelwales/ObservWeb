@@ -9,10 +9,10 @@ class NestedLocationSerializer(serializers.ModelSerializer):
 class NestedAccessPointSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccessPoint
-        fields = ('bssid')
+        fields = ('bssid',)
 
 class NestedFingerprintSerializer(serializers.ModelSerializer):
-    access_point = NestedAccessPointSerializer(read_only=True)
+    access_point = NestedAccessPointSerializer()
 
     class Meta:
         model = Fingerprint
@@ -60,10 +60,11 @@ class LocationFingerprintSerializer(serializers.ModelSerializer):
                 fingerprint.delete()
 
         for fingerprint_data in validated_data['fingerprint_set_data']:
+            access_point_data = fingerprint_data.pop('access_point')
             try:
                 access_point = AccessPoint.objects.get(pk=access_point_data['bssid'])
             except AccessPoint.DoesNotExist:
-                access_point = AccessPoint.objects.create(bssid=validated_data['bssid'])
+                access_point = AccessPoint.objects.create(**access_point_data)
             fingerprint = Fingerprint(id=fingerprint_data['id'], access_point=access_point, location=instance, rssi=fingerprint_data['rssi'])
             fingerprint.save()
 
