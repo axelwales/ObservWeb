@@ -77,12 +77,12 @@ WSGI_APPLICATION = 'threatmap.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'observ_db',
-        'USER': 'observ_user',
-        'PASSWORD': 'admin',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'axelwales$observ_db',
+        'USER': 'axelwales',
+        'PASSWORD': 'cs404spring2017',
         'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'PORT': '3306',
     }
 }
 
