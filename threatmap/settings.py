@@ -81,7 +81,7 @@ DATABASES = {
         'NAME': 'axelwales$observ_db',
         'USER': 'axelwales',
         'PASSWORD': 'cs404spring2017',
-        'HOST': '127.0.0.1',
+        'HOST': 'axelwales.mysql.pythonanywhere-services.com',
         'PORT': '3306',
     }
 }

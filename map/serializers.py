@@ -17,7 +17,7 @@ class NestedFingerprintSerializer(serializers.ModelSerializer):
         fields = ('id', 'access_point','rssi')
 
 class LocationFingerprintSerializer(serializers.ModelSerializer):
-	fingerprints = NestedFingerprintSerializer(many=True, read_only=True)
+    fingerprints = NestedFingerprintSerializer(many=True, read_only=True)
 
     class Meta:
         model = Location
