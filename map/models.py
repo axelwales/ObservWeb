@@ -9,7 +9,7 @@ class Location(models.Model):
 
 
 class AccessPoint(models.Model):
-    bssid = models.CharField("MAC Address", primary_key=True, max_length=18)
+    bssid = models.CharField("MAC Address", unique=True, max_length=18)
     location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)
 
 class Fingerprint(models.Model):
