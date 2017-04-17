@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'kcv9#f1l!sbgy=00joz8t6b2rf+=5oo@+hev%1q#g2m3u8ej*4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['axelwales.pythonanywhere.com']
 
@@ -132,7 +132,7 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.AllowAny'
     ]
 }
 
