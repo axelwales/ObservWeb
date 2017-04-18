@@ -38,17 +38,11 @@ class LocationFingerprintSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         fingerprint_set_data = validated_data.pop('fingerprint_set')
-        location = Location.objects.create(lat=validated_data['lat'],lng=validated_data['lng'])
+        location = Location.objects.create(**validated_data)
         for fingerprint_data in fingerprint_set_data:
             access_point_data = fingerprint_data.pop('access_point')
-            access_point = None
-            try:
-                access_point = AccessPoint.objects.get(bssid__exact=access_point_data['bssid'])
-            except AccessPoint.DoesNotExist:
-                access_point = AccessPoint.objects.create(**access_point_data)
-            fingerprint = Fingerprint(access_point=access_point, location=instance, rssi=fingerprint_data['rssi'])
-            fingerprint.save()
-            location.objects.fingerprint_set.add(fingerprint)
+            access_point, created = AccessPoint.objects.get_or_create(**access_point_data)
+            fingerprint = Fingerprint.objects.create(access_point = access_point, location=location, **fingerprint_data)
         return location
 
     def update(self, instance, validated_data):
