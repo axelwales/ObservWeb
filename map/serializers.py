@@ -5,11 +5,13 @@ class NestedLocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ('id', 'lat', 'lng')
+        validators = []
 
 class NestedAccessPointSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccessPoint
         fields = ('bssid',)
+        validators = []
 
 class NestedFingerprintSerializer(serializers.ModelSerializer):
     access_point = NestedAccessPointSerializer()
@@ -17,6 +19,7 @@ class NestedFingerprintSerializer(serializers.ModelSerializer):
     class Meta:
         model = Fingerprint
         fields = ('id', 'access_point','rssi')
+        validators = []
 
 class AccessPointSerializer(serializers.ModelSerializer):
     location = NestedLocationSerializer(read_only=True)
@@ -38,7 +41,7 @@ class LocationFingerprintSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         fingerprint_set_data = validated_data.pop('fingerprint_set')
-        location = Location.objects.create(**validated_data)
+        location, created = Location.objects.get_or_create(**validated_data)
         for fingerprint_data in fingerprint_set_data:
             access_point_data = fingerprint_data.pop('access_point')
             access_point, created = AccessPoint.objects.get_or_create(**access_point_data)
@@ -70,3 +73,4 @@ class LocationFingerprintSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ('id', 'lat', 'lng', 'fingerprint_set')
+        validators = []
