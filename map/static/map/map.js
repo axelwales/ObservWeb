@@ -7,14 +7,14 @@ $( "body" ).on("geoLoaded", function(event) {
 function setMap(geoJSON) {
 	console.log(geoJSON);
 	var threatmap = L.map('threatmap', {
-		minZoom: 20,
+		minZoom: 19,
 		maxZoom: 23
 	});
 
-	/*L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		maxZoom: 19,
+	L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	    maxZoom: 20,
 		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-	}).addTo(threatmap);*/
+	}).addTo(threatmap);
 
 	var style = {
 	    "color": "#000000",
@@ -61,7 +61,7 @@ function setMap(geoJSON) {
 	});
 }
 
-$(function() { 
+$(function() {
 	$(function() {
 	$.ajax({
 		url: '/static/map/app-data/EngAFloor3.geojson',

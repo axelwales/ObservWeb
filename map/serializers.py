@@ -5,11 +5,16 @@ class NestedLocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ('id', 'lat', 'lng')
+        validators = []
 
 class NestedAccessPointSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccessPoint
         fields = ('bssid',)
+        validators = []
+        extra_kwargs = {
+            'bssid': {'validators': []},
+        }
 
 class NestedFingerprintSerializer(serializers.ModelSerializer):
     access_point = NestedAccessPointSerializer()
@@ -17,6 +22,10 @@ class NestedFingerprintSerializer(serializers.ModelSerializer):
     class Meta:
         model = Fingerprint
         fields = ('id', 'access_point','rssi')
+        validators = []
+        extra_kwargs = {
+            'access_point': {'validators': []},
+        }
 
 class AccessPointSerializer(serializers.ModelSerializer):
     location = NestedLocationSerializer(read_only=True)
@@ -24,6 +33,10 @@ class AccessPointSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccessPoint
         fields = ('bssid', 'location')
+        validators = []
+        extra_kwargs = {
+            'location': {'validators': []},
+        }
 
 class FingerprintSerializer(serializers.ModelSerializer):
     access_point = NestedAccessPointSerializer(read_only=True)
@@ -32,20 +45,22 @@ class FingerprintSerializer(serializers.ModelSerializer):
     class Meta:
         model = Fingerprint
         fields = ('id', 'location', 'access_point','rssi')
+        validators = []
+        extra_kwargs = {
+            'location': {'validators': []},
+            'access_point': {'validators': []},
+        }
 
 class LocationFingerprintSerializer(serializers.ModelSerializer):
     fingerprint_set = NestedFingerprintSerializer(many=True)
 
     def create(self, validated_data):
         fingerprint_set_data = validated_data.pop('fingerprint_set')
-        location = Location.objects.create(lat=validated_data['lat'],lng=validated_data['lng'])
+        location, created = Location.objects.get_or_create(**validated_data)
         for fingerprint_data in fingerprint_set_data:
             access_point_data = fingerprint_data.pop('access_point')
-            try:
-                access_point = AccessPoint.objects.get(pk=access_point_data['bssid'])
-            except AccessPoint.DoesNotExist:
-                access_point = AccessPoint.objects.create(**access_point_data)
-            Fingerprint.objects.create(location=location, access_point=access_point, **fingerprint_data)
+            access_point, created = AccessPoint.objects.get_or_create(**access_point_data)
+            fingerprint = Fingerprint.objects.create(access_point = access_point, location=location, **fingerprint_data)
         return location
 
     def update(self, instance, validated_data):
@@ -61,11 +76,8 @@ class LocationFingerprintSerializer(serializers.ModelSerializer):
 
         for fingerprint_data in validated_data['fingerprint_set_data']:
             access_point_data = fingerprint_data.pop('access_point')
-            try:
-                access_point = AccessPoint.objects.get(pk=access_point_data['bssid'])
-            except AccessPoint.DoesNotExist:
-                access_point = AccessPoint.objects.create(**access_point_data)
-            fingerprint = Fingerprint(id=fingerprint_data['id'], access_point=access_point, location=instance, rssi=fingerprint_data['rssi'])
+            access_point, created = AccessPoint.objects.get_or_create(**access_point_data)
+            fingerprint = Fingerprint(access_point=access_point, location=instance, **fingerprint_data)
             fingerprint.save()
 
         return instance
@@ -73,3 +85,7 @@ class LocationFingerprintSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ('id', 'lat', 'lng', 'fingerprint_set')
+        validators = []
+        extra_kwargs = {
+            'fingerprint_set': {'validators': []},
+        }

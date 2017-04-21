@@ -25,7 +25,7 @@ SECRET_KEY = 'kcv9#f1l!sbgy=00joz8t6b2rf+=5oo@+hev%1q#g2m3u8ej*4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['axelwales.pythonanywhere.com']
 
 
 # Application definition
@@ -77,12 +77,12 @@ WSGI_APPLICATION = 'threatmap.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'observ_db',
-        'USER': 'observ_user',
-        'PASSWORD': 'admin',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'axelwales$observ_db',
+        'USER': 'axelwales',
+        'PASSWORD': 'cs404spring2017',
+        'HOST': 'axelwales.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
     }
 }
 
@@ -132,7 +132,7 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.AllowAny'
     ]
 }
 
