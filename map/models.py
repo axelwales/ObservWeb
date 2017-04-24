@@ -2,6 +2,10 @@ from django.db import models
 
 
 # Create your models here.
+class DedicatedGroup(models.Model):
+    label = models.CharField("MAC Address", unique=True, max_length=50, null=True)
+
+
 class Location(models.Model):
     lat = models.FloatField('latitude')
     lng = models.FloatField('longitude')
@@ -13,6 +17,7 @@ class Location(models.Model):
 class AccessPoint(models.Model):
     bssid = models.CharField("MAC Address", unique=True, max_length=18)
     location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)
+    group = models.ForeignKey(DedicatedGroup, null=True, on_delete=models.SET_NULL)
 
 
 class Fingerprint(models.Model):
@@ -29,4 +34,4 @@ class Fingerprint(models.Model):
     access_point = models.ForeignKey(AccessPoint, null=True, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, db_index=True, null=True, on_delete=models.CASCADE)
     rssi = models.IntegerField(null=True)
-    direction = models.CharField(choices=DIRECTION_CHOICES, null=True)
+    direction = models.CharField(choices=DIRECTION_CHOICES, null=True, max_length=5)

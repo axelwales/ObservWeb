@@ -1,5 +1,5 @@
 from map.models import Location
-from locator import Locator
+from map.locator import Locator
 
 
 class LocatorWrapper(object):
