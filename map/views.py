@@ -4,13 +4,23 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
-from map.models import Location
-from map.serializers import LocationFingerprintSerializer
+from map.models import Location, DedicatedGroup
+from map.serializers import LocationFingerprintSerializer, DedicatedGroupSerializer
 from map.locator_wrapper import LocatorWrapper
 
 
 def index(request):
     return render(request, 'index.html')
+
+
+class DedicatedGroupList(generics.ListCreateAPIView):
+    queryset = DedicatedGroup.objects.all()
+    serializer_class = DedicatedGroupSerializer
+
+
+class DedicatedGroupDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DedicatedGroup.objects.all()
+    serializer_class = DedicatedGroupSerializer
 
 
 class FingerprintList(generics.ListCreateAPIView):

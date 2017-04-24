@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from map.models import Location, Fingerprint, AccessPoint
+from map.models import Location, Fingerprint, AccessPoint, DedicatedGroup
 
 class NestedLocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,6 +36,24 @@ class AccessPointSerializer(serializers.ModelSerializer):
         validators = []
         extra_kwargs = {
             'location': {'validators': []},
+        }
+
+class DedicatedGroupSerializer(serializers.ModelSerializer):
+    accesspoint_set = NestedAccessPointSerializer(many=True)
+
+    def create(self, validated_data):
+        access_point_set_data = validated_data.pop('accesspoint_set')
+        group, created = DedicatedGroup.objects.get_or_create(**validated_data)
+        for access_point_data in access_point_set_data:
+            access_point, created = AccessPoint.objects.get_or_create(**access_point_data)
+        return group
+
+    class Meta:
+        model = DedicatedGroup
+        fields = ('label', 'accesspoint_set')
+        validators = []
+        extra_kwargs = {
+            'accesspoint_set': {'validators': []},
         }
 
 class FingerprintSerializer(serializers.ModelSerializer):
