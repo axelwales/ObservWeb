@@ -27,8 +27,9 @@ class LocatorWrapper(object):
             (fingerprint['bssid'], int(fingerprint['rssi']))
             for fingerprint in fingerprint_data
         ] + [(bssid, -100) for bssid in bssids_missing]
-        t_vector = map(lambda ap: ap[1],
-                       target_full_data.sort(key=lambda ap: ap[0]))
+
+        target_full_data.sort(key=lambda ap: ap[0])
+        t_vector = map(lambda ap: ap[1], target_full_data)
 
         for fingerprint in averaged_fingerprints:
             bssids_missing = bssid_set \
