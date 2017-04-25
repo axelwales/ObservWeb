@@ -9,12 +9,14 @@ class LocatorWrapper(object):
 
     def get_estimate(self, target_fingerprint_data):
 
-        raw_fingerprints = self.get_raw_fingerprints(target_fingerprint_data)
+        fingerprint_data = target_fingerprint_data["fingerprint_set"]
+
+        raw_fingerprints = self.get_raw_fingerprints(fingerprint_data)
 
         averaged_fingerprints = \
             self.get_averaged_fingerprints(raw_fingerprints)
 
-        target_bssid_set = set(self.get_bssids(target_fingerprint_data))
+        target_bssid_set = set(self.get_bssids(fingerprint_data))
         bssid_set = set(
             [ap[0] for ap in [loc[1] for loc in averaged_fingerprints]]
         )
@@ -23,7 +25,7 @@ class LocatorWrapper(object):
         bssids_missing = bssid_set - target_bssid_set
         target_full_data = [
             (fingerprint['bssid'], int(fingerprint['rssi']))
-            for fingerprint in target_fingerprint_data
+            for fingerprint in fingerprint_data
         ] + [(bssid, -100) for bssid in bssids_missing]
         t_vector = map(lambda ap: ap[1],
                        target_full_data.sort(key=lambda ap: ap[0]))
@@ -44,9 +46,9 @@ class LocatorWrapper(object):
 
         return {'lat': estimate[0], 'lng': estimate[1]}
 
-    def get_raw_fingerprints(self, target_fingerprint_data):
+    def get_raw_fingerprints(self, fingerprint_data):
 
-        bssids = self.get_bssids(target_fingerprint_data)
+        bssids = self.get_bssids(fingerprint_data)
 
         fingerprinted_locations = Location.objects \
             .filter(fingerprint__access_point__bssid__in=bssids)
@@ -62,11 +64,11 @@ class LocatorWrapper(object):
             for l in fingerprinted_locations
         ]
 
-    def get_bssids(self, target_fingerprint_data):
+    def get_bssids(self, fingerprint_data):
         return [
             fingerprint['bssid']
             for fingerprint
-            in target_fingerprint_data
+            in fingerprint_data
         ]
 
     def get_averaged_fingerprints(self, raw_fingerprints):
