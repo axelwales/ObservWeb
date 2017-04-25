@@ -20,7 +20,7 @@ class LocatorWrapper(object):
         bssid_set = set(
             [ap[0] for ap in [loc[1] for loc in averaged_fingerprints]]
         )
-        bssid_set += target_bssid_set
+        bssid_set = target_bssid_set + bssid_set
 
         bssids_missing = bssid_set - target_bssid_set
         target_full_data = [
