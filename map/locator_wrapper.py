@@ -43,7 +43,8 @@ class LocatorWrapper(object):
             for f in averaged_fingerprints
         ]
 
-        estimate = Locator.get_location_estimate(t_vector, s_vectors, 4)
+        locator = Locator()
+        estimate = locator.get_location_estimate(t_vector, s_vectors, 4)
 
         return {'lat': estimate[0], 'lng': estimate[1]}
 
