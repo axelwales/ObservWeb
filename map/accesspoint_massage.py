@@ -1,5 +1,6 @@
 from map.models import AccessPoint, Fingerprint, TempAccessPoint, TempFingerprint
 from django.db.models import Avg
+from django.db.utils import IntegrityError
 
 
 class Massager(object):
@@ -11,7 +12,11 @@ class Massager(object):
         aps = AccessPoint.objects.all()
         for ap in aps:
             bssid = ap.bssid[:len(ap.bssid) - 1]
-            TempAccessPoint.objects.create(bssid=bssid)
+            try:
+                TempAccessPoint.objects.create(bssid=bssid)
+            except IntegrityError:
+                pass
+
 
     def average_existing_fingerprints(self):
         tempAPs = TempAccessPoint.objects.all()
