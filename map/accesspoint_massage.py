@@ -55,5 +55,5 @@ class Massager(object):
                 access_point=access_point,
                 rssi=f.rssi,
                 count=f.count,
-                direction=f.NORTH
+                direction="north"
             )
