@@ -25,7 +25,7 @@ class AccessPoint(models.Model):
 
 
 class TempFingerprint(models.Model):
-    access_point = models.ForeignKey(AccessPoint, db_index=True, null=True, on_delete=models.CASCADE)
+    temp_ap = models.ForeignKey(TempAccessPoint, db_index=True, null=True, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, db_index=True, null=True, on_delete=models.CASCADE)
     rssi = models.IntegerField(null=True)
 

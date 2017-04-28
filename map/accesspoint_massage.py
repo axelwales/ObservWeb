@@ -25,7 +25,7 @@ class Massager(object):
                 .values('location') \
                 .annotate(rssi=Avg('rssi'))
             for f in fingerprints:
-                TempFingerprint.objects.create(bssid=bssid, location=f['location'], rssi=f['rssi'])
+                TempFingerprint.objects.create(temp_ap=tap, location=f['location'], rssi=f['rssi'])
 
     def replace_aps(self):
         tempAPs = TempAccessPoint.objects.all()
@@ -36,7 +36,7 @@ class Massager(object):
         tempAPs = TempAccessPoint.objects.all()
         for tap in tempAPs:
             access_point, created = AccessPoint.objects.get_or_create(bssid=tap.bssid)
-            fingerprints = Fingerprint.objects.filter(access_point__contains=tap.bssid)
+            fingerprints = Fingerprint.objects.filter(access_point__bssid__contains=tap.bssid)
             for f in fingerprints:
                 f.access_point = access_point
                 f.save()
