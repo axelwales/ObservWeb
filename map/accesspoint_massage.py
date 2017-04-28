@@ -21,7 +21,7 @@ class Massager(object):
     def average_existing_fingerprints(self):
         tempAPs = TempAccessPoint.objects.all()
         for tap in tempAPs:
-            fingerprints = Fingerprint.objects.filter(access_point__contains=tap.bssid) \
+            fingerprints = Fingerprint.objects.filter(access_point__bssid__contains=tap.bssid) \
                 .values('location') \
                 .annotate(rssi=Avg('rssi'))
             for f in fingerprints:
