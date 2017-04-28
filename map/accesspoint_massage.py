@@ -47,10 +47,14 @@ class Massager(object):
             AccessPoint.objects.create(bssid=tap.bssid)
 
     def replace_fingerprint_aps(self):
-        tempAPs = TempAccessPoint.objects.all()
-        for tap in tempAPs:
-            access_point, created = AccessPoint.objects.get_or_create(bssid=tap.bssid)
-            fingerprints = Fingerprint.objects.filter(access_point__bssid__contains=tap.bssid)
-            for f in fingerprints:
-                f.access_point = access_point
-                f.save()
+        fingerprints = TempFingerprint.objects.all()
+        for f in fingerprints:
+            tap = TempAccessPoint.objects.get(pk=f.temp_ap)
+            access_point = AccessPoint.objects.get(bssid=tap.bssid)
+            Fingerprint.objects.create(
+                location=f.location,
+                access_point=access_point,
+                rssi=f.rssi,
+                count=f.count,
+                direction=f.NORTH
+            )
