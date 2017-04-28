@@ -1,4 +1,4 @@
-from map.models import AccessPoint, Fingerprint, TempAccessPoint, TempFingerprint
+from map.models import AccessPoint, Fingerprint, TempAccessPoint, TempFingerprint, Location
 from django.db.models import Avg
 from django.db.utils import IntegrityError
 
@@ -25,7 +25,8 @@ class Massager(object):
                 .values('location') \
                 .annotate(rssi=Avg('rssi'))
             for f in fingerprints:
-                TempFingerprint.objects.create(temp_ap=tap, location=f['location'], rssi=f['rssi'])
+                location = Location.objects.get(pk=f['location'])
+                TempFingerprint.objects.create(temp_ap=tap, location=location, rssi=f['rssi'])
 
     def replace_aps(self):
         tempAPs = TempAccessPoint.objects.all()
