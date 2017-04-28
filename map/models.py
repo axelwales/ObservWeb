@@ -14,10 +14,20 @@ class Location(models.Model):
         unique_together = ("lat", "lng")
 
 
+class TempAccessPoint(models.Model):
+    bssid = models.CharField(unique=True, max_length=17)
+
+
 class AccessPoint(models.Model):
-    bssid = models.CharField("MAC Address", unique=True, max_length=18)
+    bssid = models.CharField(unique=True, max_length=18)
     location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)
     group = models.ForeignKey(DedicatedGroup, null=True, on_delete=models.SET_NULL)
+
+
+class TempFingerprint(models.Model):
+    access_point = models.ForeignKey(AccessPoint, db_index=True, null=True, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, db_index=True, null=True, on_delete=models.CASCADE)
+    rssi = models.IntegerField(null=True)
 
 
 class Fingerprint(models.Model):
@@ -31,7 +41,7 @@ class Fingerprint(models.Model):
         (WEST, "West"),
         (SOUTH, "South")
     )
-    access_point = models.ForeignKey(AccessPoint, null=True, on_delete=models.CASCADE)
+    access_point = models.ForeignKey(AccessPoint, db_index=True, null=True, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, db_index=True, null=True, on_delete=models.CASCADE)
     rssi = models.IntegerField(null=True)
     direction = models.CharField(choices=DIRECTION_CHOICES, null=True, max_length=5)
