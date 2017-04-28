@@ -40,12 +40,15 @@ class AccessPointSerializer(serializers.ModelSerializer):
 
 class DedicatedGroupSerializer(serializers.ModelSerializer):
     accesspoint_set = NestedAccessPointSerializer(many=True)
+    label = serializers.CharField(max_length=50)
 
     def create(self, validated_data):
         access_point_set_data = validated_data.pop('accesspoint_set')
         group, created = DedicatedGroup.objects.get_or_create(**validated_data)
         for access_point_data in access_point_set_data:
             access_point, created = AccessPoint.objects.get_or_create(**access_point_data)
+            access_point.group = group
+            access_point.save()
         return group
 
     class Meta:

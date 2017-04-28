@@ -62,7 +62,7 @@ class LocatorWrapper(object):
             [
                 (l.lat, l.lng),
                 [
-                    (fingerprint.access_point.bssid, fingerprint.rssi)
+                    (fingerprint.access_point.id, fingerprint.access_point.bssid, fingerprint.rssi)
                     for fingerprint in l.fingerprint_set.all()
                 ]
             ]
@@ -81,19 +81,19 @@ class LocatorWrapper(object):
         averaged_fingerprints = []
         for fingerprint in raw_fingerprints:
             fingerprint[1].sort(key=lambda ap: ap[0])
-            bssid = fingerprint[1][0][0]
+            bssid = fingerprint[1][0][1]
             sum = 0
             count = 0
             averaged_fingerprint = [fingerprint[0], []]
             for ap in fingerprint[1]:
-                if (bssid != ap[0]):
+                if (bssid != ap[1]):
                     averaged_fingerprint[1].append(
                         (bssid, float(sum) / float(count))
                     )
-                    bssid = ap[0]
+                    bssid = ap[1]
                     sum = 0
                     count = 0
-                sum += ap[1]
+                sum += ap[2]
                 count += 1
             averaged_fingerprints.append(averaged_fingerprint)
         return averaged_fingerprints
