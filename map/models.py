@@ -19,7 +19,7 @@ class TempAccessPoint(models.Model):
 
 
 class AccessPoint(models.Model):
-    bssid = models.CharField(unique=True, max_length=18)
+    bssid = models.CharField(unique=True, db_index=True, max_length=18)
     location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)
     group = models.ForeignKey(DedicatedGroup, null=True, on_delete=models.SET_NULL)
 
@@ -27,7 +27,7 @@ class AccessPoint(models.Model):
 class TempFingerprint(models.Model):
     temp_ap = models.ForeignKey(TempAccessPoint, db_index=True, null=True, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, db_index=True, null=True, on_delete=models.CASCADE)
-    rssi = models.IntegerField(null=True)
+    rssi = models.FloatField(null=True)
     count = models.IntegerField(null=True)
 
 
@@ -44,6 +44,6 @@ class Fingerprint(models.Model):
     )
     access_point = models.ForeignKey(AccessPoint, db_index=True, null=True, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, db_index=True, null=True, on_delete=models.CASCADE)
-    rssi = models.IntegerField(null=True)
+    rssi = models.FloatField(null=True)
     count = models.IntegerField(null=True)
     direction = models.CharField(choices=DIRECTION_CHOICES, null=True, max_length=5)

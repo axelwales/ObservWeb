@@ -44,6 +44,6 @@ class LocationEstimate(APIView):
         """
         Return a location estimate.
         """
-        locator = LocatorWrapper()
-        estimate = locator.get_estimate(request.data)
+        locator = LocatorWrapper(request.data)
+        estimate = locator.get_estimate()
         return Response(estimate)

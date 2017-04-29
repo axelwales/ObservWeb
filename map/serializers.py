@@ -21,7 +21,7 @@ class NestedFingerprintSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Fingerprint
-        fields = ('id', 'access_point','rssi')
+        fields = ('id', 'access_point','rssi', 'count')
         validators = []
         extra_kwargs = {
             'access_point': {'validators': []},
@@ -46,6 +46,7 @@ class DedicatedGroupSerializer(serializers.ModelSerializer):
         access_point_set_data = validated_data.pop('accesspoint_set')
         group, created = DedicatedGroup.objects.get_or_create(**validated_data)
         for access_point_data in access_point_set_data:
+            access_point_data['bssid'] = access_point_data['bssid'][:16]
             access_point, created = AccessPoint.objects.get_or_create(**access_point_data)
             access_point.group = group
             access_point.save()
@@ -65,12 +66,13 @@ class FingerprintSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Fingerprint
-        fields = ('id', 'location', 'access_point','rssi')
+        fields = ('id', 'location', 'access_point', 'rssi')
         validators = []
         extra_kwargs = {
             'location': {'validators': []},
             'access_point': {'validators': []},
         }
+
 
 class LocationFingerprintSerializer(serializers.ModelSerializer):
     fingerprint_set = NestedFingerprintSerializer(many=True)
@@ -80,8 +82,17 @@ class LocationFingerprintSerializer(serializers.ModelSerializer):
         location, created = Location.objects.get_or_create(**validated_data)
         for fingerprint_data in fingerprint_set_data:
             access_point_data = fingerprint_data.pop('access_point')
-            access_point, created = AccessPoint.objects.get_or_create(**access_point_data)
-            fingerprint = Fingerprint.objects.create(access_point = access_point, location=location, **fingerprint_data)
+            access_point_data['bssid'] = access_point_data['bssid'][:16]
+            access_point, ap_created = AccessPoint.objects.get_or_create(**access_point_data)
+            fingerprint, f_created = Fingerprint.objects.get_or_create(access_point = access_point, location=location)
+            if f_created:
+                fingerprint.rssi = fingerprint_data['rssi']
+                fingerprint.save()
+            else:
+                count = float(fingerprint.count)
+                fingerprint.rssi = \
+                    fingerprint.rssi * count / (count + 1.0) + \
+                    fingerprint_data['rssi'] * 1.0 / (count + 1.0)
         return location
 
     def update(self, instance, validated_data):
