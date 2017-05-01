@@ -87,6 +87,7 @@ class LocationFingerprintSerializer(serializers.ModelSerializer):
             fingerprint, f_created = Fingerprint.objects.get_or_create(access_point = access_point, location=location)
             if f_created:
                 fingerprint.rssi = fingerprint_data['rssi']
+                fingerprint.count = 1;
                 fingerprint.save()
             else:
                 count = float(fingerprint.count)

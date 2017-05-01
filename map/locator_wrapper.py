@@ -54,7 +54,11 @@ class LocatorWrapper(object):
         locator = Locator()
         estimate = locator.get_location_estimate(in_vector, source_vectors, 4)
 
-        return {'lat':estimate[0], 'lng':estimate[1]}
+        result = {'lat': -1, 'lng': -1}
+        if (len(estimate) > 0):
+            result = {'lat':estimate[0], 'lng':estimate[1]}
+
+        return result
 
     def create_input_vector(self):
         unmatched_bssids = self.bssids - self.fingerprints['all_bssids']
